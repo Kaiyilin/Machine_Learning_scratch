@@ -8,3 +8,4 @@ I trained this shallow NN architecture with mnist dataset
 
 Here's the loss function looks like
 
+![](Images/loss.png)
