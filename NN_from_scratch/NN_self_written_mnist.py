@@ -5,16 +5,37 @@ import matplotlib.pyplot as plt
 from tensorflow.keras.utils import to_categorical  
 from ANN import Artificial_Neural_Networks, Losses
 import matplotlib.pyplot as plt
+import os, sys
+
+def oneHot_encoder(y, num_classes):
+    """
+    Took me 120ms for ther transformation,
+    but only took 4.73 ms for Keras to_categorical
+    """
+    one_hot_dict = {}
+    for i in range(num_classes):
+        trans_code = np.zeros((1, num_classes))
+        trans_code[0][i] = 1
+        one_hot_dict[i] = trans_code
+    one_hot_array = []
+    for val in y:
+        try:
+            one_hot_array.append(one_hot_dict[val])
+        except KeyError:
+            sys.exit(f"The number {val} did not match to the classes you proposed")
+    return np.concatenate(one_hot_array, axis=0)
+
 # mnist dataset
+num_classes = 10
 (train_images, train_labels), (test_images, test_labels) = tf.keras.datasets.mnist.load_data()  
 
 train_images_norm = train_images.astype('float32')/255
 train_images_forNN = train_images_norm.reshape((60000, 28*28))
-train_labels_one_hot = to_categorical(train_labels)  
+train_labels_one_hot = oneHot_encoder(train_labels, num_classes)  
 
 test_images_norm = test_images.astype('float32')/255
 test_images_forNN = test_images_norm.reshape((10000, 28*28))
-test_labels_one_hot = to_categorical(test_labels)  
+test_labels_one_hot = oneHot_encoder(test_labels, num_classes)  
 
 epochs = 3
 
