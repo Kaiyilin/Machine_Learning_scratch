@@ -2,9 +2,10 @@ from os import pread
 import numpy as np
 import tensorflow as tf 
 import matplotlib.pyplot as plt
-from tensorflow.keras.utils import to_categorical  
+#from tensorflow.keras.utils import to_categorical  
 from ANN import Artificial_Neural_Networks, Losses
 import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
 import os, sys
 
 def oneHot_encoder(y, num_classes):
@@ -22,7 +23,7 @@ def oneHot_encoder(y, num_classes):
         try:
             one_hot_array.append(one_hot_dict[val])
         except KeyError:
-            sys.exit(f"The number {val} did not match to the classes you proposed")
+            sys.exit(f"The number {val} exceeds the classes you proposed")
     return np.concatenate(one_hot_array, axis=0)
 
 # mnist dataset
@@ -37,7 +38,7 @@ test_images_norm = test_images.astype('float32')/255
 test_images_forNN = test_images_norm.reshape((10000, 28*28))
 test_labels_one_hot = oneHot_encoder(test_labels, num_classes)  
 
-epochs = 3
+epochs = 2
 
 NN = Artificial_Neural_Networks(28*28, 512, 10)
 
@@ -51,11 +52,18 @@ for epoch in range(epochs):
         train_labels_one_hot_batch = train_labels_one_hot[i:i+batch_size]
         NN.feedforward(train_images_batch, train_labels_one_hot_batch)
         loss_list.append(NN.loss)
-        print(f"Loss: {Losses.mse(NN.y_pred, train_labels_one_hot_batch)}")
+        print(f"""Epochs_{epoch+1}: {i/600:.1f}% Completed, Loss: {Losses.mse(NN.y_pred, train_labels_one_hot_batch):.2f}""")
         NN.backprop(lr=1e-2)
         #NN.get_weights()
 pred = np.argmax(NN.predict(test_images_forNN),axis=1)
+#conf = confusion_matrix(pred, test_labels)
 print(f"model prediction: {pred}")
 print(f"model labels: {test_labels}")
 plt.plot(loss_list)
 plt.savefig('loss.png')
+"""
+plt.imshow(conf, cmap = "jet")
+plt.xticks([0,1,2,3,4,5,6,7,8,9])
+plt.yticks([0,1,2,3,4,5,6,7,8,9])
+
+"""
