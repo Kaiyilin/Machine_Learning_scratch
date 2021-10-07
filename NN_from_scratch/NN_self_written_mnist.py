@@ -1,10 +1,9 @@
-from os import pread
 import numpy as np
 import tensorflow as tf 
 import matplotlib.pyplot as plt
-#from tensorflow.keras.utils import to_categorical  
 from ANN import Artificial_Neural_Networks, Losses
 import matplotlib.pyplot as plt
+import seaborn as sns
 from sklearn.metrics import confusion_matrix
 import os, sys
 
@@ -56,14 +55,16 @@ for epoch in range(epochs):
         NN.backprop(lr=1e-2)
         #NN.get_weights()
 pred = np.argmax(NN.predict(test_images_forNN),axis=1)
-#conf = confusion_matrix(pred, test_labels)
+conf = confusion_matrix(pred, test_labels)
 print(f"model prediction: {pred}")
 print(f"model labels: {test_labels}")
 plt.plot(loss_list)
 plt.savefig('loss.png')
+plt.close()
+print(conf)
 """
-plt.imshow(conf, cmap = "jet")
+plt.matshow(conf)
 plt.xticks([0,1,2,3,4,5,6,7,8,9])
 plt.yticks([0,1,2,3,4,5,6,7,8,9])
-
+plt.savefig("confusion_matrix.png")
 """
