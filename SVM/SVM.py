@@ -18,8 +18,8 @@ clf.fit(X_train,y_train)
 clf2.fit(X_train,y_train)
 
 
-clf.predict(X_test)
-clf2.predict(X_test)
+re_1 = clf.predict(X_test)
+re_2 = clf2.predict(X_test)
 
 
 print('kernel: rbf result')
@@ -29,6 +29,18 @@ print(clf.score(X_test, y_test))
 print("----"*20)
 
 print('kernel: sigmoid result')
-print(clf.score(X_train,y_train))
-print(clf.score(X_test, y_test))
+print(clf2.score(X_train,y_train))
+print(clf2.score(X_test, y_test))
 
+color_dict = {
+    0: "blue",
+    1: "orange",
+    2:"green"
+    }
+
+decode = [*map(color_dict.get, re_1)]
+
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+ax.scatter(X_test[:, 0], X_test[:, 1], X_test[:, 2], color=decode)
+plt.show()
